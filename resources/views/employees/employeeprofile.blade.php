@@ -36,7 +36,6 @@
                                                 <small class="text-muted">{{ $users->position }}</small>
                                                 <div class="staff-id">Employee ID : {{ $users->user_id }}</div>
                                                 <div class="small doj text-muted">Date of Join : {{ $users->join_date }}</div>
-                                                <div class="staff-msg"><a class="btn btn-custom" href="chat.html">Send Message</a></div>
                                             </div>
                                         </div>
                                         <div class="col-md-7">
@@ -99,7 +98,7 @@
                                                                 <img src="{{ URL::to('/assets/images/'. $users->avatar) }}" alt="">
                                                             </div>
                                                         </div>
-                                                        <a>{{ $users->line_manager }}</a>
+                                                        
                                                     </div>
                                                 </li> 
                                             </ul>
@@ -118,8 +117,6 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
                         <ul class="nav nav-tabs nav-tabs-bottom">
                             <li class="nav-item"><a href="#emp_profile" data-toggle="tab" class="nav-link active">Profile</a></li>
-                            <li class="nav-item"><a href="#emp_projects" data-toggle="tab" class="nav-link">Projects</a></li>
-                            <li class="nav-item"><a href="#bank_statutory" data-toggle="tab" class="nav-link">Bank & Statutory <small class="text-danger">(Admin Only)</small></a></li>
                         </ul>
                     </div>
                 </div>
@@ -275,21 +272,29 @@
                                         </a>
                                     </h3>
                                     <ul class="personal-info">
-                                        <li>
-                                            <div class="title">Bank name</div>
-                                            <div class="text">ICICI Bank</div>
+                                    <li>
+                                            <div class="title">Bank Name</div>
+                                            @if (!empty($bank_information->bank_name))
+                                            <div class="text">{{ $bank_information->bank_name }}</div>
+                                            @else
+                                            <div class="text">N/A</div>
+                                            @endif
                                         </li>
                                         <li>
-                                            <div class="title">Bank account No.</div>
-                                            <div class="text">159843014641</div>
+                                            <div class="title">Bank Account Number</div>
+                                            @if (!empty($bank_information->bank_account_no))
+                                            <div class="text">{{ $bank_information->bank_account_no }}</div>
+                                            @else
+                                            <div class="text">N/A</div>
+                                            @endif
                                         </li>
                                         <li>
-                                            <div class="title">IFSC Code</div>
-                                            <div class="text">ICI24504</div>
-                                        </li>
-                                        <li>
-                                            <div class="title">PAN No</div>
-                                            <div class="text">TC000Y56</div>
+                                            <div class="title">Account Type</div>
+                                            @if (!empty($bank_information->account_type))
+                                            <div class="text">{{ $bank_information->account_type }}</div>
+                                            @else
+                                            <div class="text">N/A</div>
+                                            @endif
                                         </li>
                                     </ul>
                                 </div>
@@ -298,594 +303,119 @@
                         <div class="col-md-6 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
-                                    <h3 class="card-title">Family Informations <a href="#" class="edit-icon" data-toggle="modal" data-target="#family_info_modal"><i class="fa fa-pencil"></i></a></h3>
+                                    <h3 class="card-title">FNPF Information<a href="#" class="edit-icon" data-toggle="modal" data-target="#fnfp_modal"><i class="fa fa-pencil"></i></a></h3>
                                     <div class="table-responsive">
-                                        <table class="table table-nowrap">
+                                    <table class="table">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
-                                                    <th>Relationship</th>
-                                                    <th>Date of Birth</th>
-                                                    <th>Phone</th>
-                                                    <th></th>
+                                                    <th>Account No.</th>
+                                                    <th>Employee Contribution</th>
+                                                    <th>Employer Contribution</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>Leo</td>
-                                                    <td>Brother</td>
-                                                    <td>Feb 16th, 2019</td>
-                                                    <td>9876543210</td>
-                                                    <td class="text-right">
-                                                        <div class="dropdown dropdown-action">
-                                                            <a aria-expanded="false" data-toggle="dropdown" class="action-icon dropdown-toggle" href="#"><i class="material-icons">more_vert</i></a>
-                                                            <div class="dropdown-menu dropdown-menu-right">
-                                                                <a href="#" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                                <a href="#" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
+                                        @if(isset($fnfpInfos) && $fnfpInfos->count() > 0)
+                                            @foreach($fnfpInfos as $info)
+                                            <tr>
+                                                <td>{{ $info->name }}</td>
+                                                <td>{{ $info->account_no }}</td>
+                                                <td>{{ $info->employee_contribution }}</td>
+                                                <td>{{ $info->employer_contribution }}</td>
+                                            </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="4">No FNPF information available.</td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 d-flex">
-                            <div class="card profile-box flex-fill">
-                                <div class="card-body">
-                                    <h3 class="card-title">Education Informations <a href="#" class="edit-icon" data-toggle="modal" data-target="#education_info"><i class="fa fa-pencil"></i></a></h3>
-                                    <div class="experience-box">
-                                        <ul class="experience-list">
-                                            <li>
-                                                <div class="experience-user">
-                                                    <div class="before-circle"></div>
-                                                </div>
-                                                <div class="experience-content">
-                                                    <div class="timeline-content">
-                                                        <a href="#/" class="name">International College of Arts and Science (UG)</a>
-                                                        <div>Bsc Computer Science</div>
-                                                        <span class="time">2000 - 2003</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="experience-user">
-                                                    <div class="before-circle"></div>
-                                                </div>
-                                                <div class="experience-content">
-                                                    <div class="timeline-content">
-                                                        <a href="#/" class="name">International College of Arts and Science (PG)</a>
-                                                        <div>Msc Computer Science</div>
-                                                        <span class="time">2000 - 2003</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 d-flex">
-                            <div class="card profile-box flex-fill">
-                                <div class="card-body">
-                                    <h3 class="card-title">Experience <a href="#" class="edit-icon" data-toggle="modal" data-target="#experience_info"><i class="fa fa-pencil"></i></a></h3>
-                                    <div class="experience-box">
-                                        <ul class="experience-list">
-                                            <li>
-                                                <div class="experience-user">
-                                                    <div class="before-circle"></div>
-                                                </div>
-                                                <div class="experience-content">
-                                                    <div class="timeline-content">
-                                                        <a href="#/" class="name">Web Designer at Zen Corporation</a>
-                                                        <span class="time">Jan 2013 - Present (5 years 2 months)</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="experience-user">
-                                                    <div class="before-circle"></div>
-                                                </div>
-                                                <div class="experience-content">
-                                                    <div class="timeline-content">
-                                                        <a href="#/" class="name">Web Designer at Ron-tech</a>
-                                                        <span class="time">Jan 2013 - Present (5 years 2 months)</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="experience-user">
-                                                    <div class="before-circle"></div>
-                                                </div>
-                                                <div class="experience-content">
-                                                    <div class="timeline-content">
-                                                        <a href="#/" class="name">Web Designer at Dalt Technology</a>
-                                                        <span class="time">Jan 2013 - Present (5 years 2 months)</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
                 <!-- /Profile Info Tab -->
-                
-                <!-- Projects Tab -->
-                <div class="tab-pane fade" id="emp_projects">
-                    <div class="row">
-                        <div class="col-lg-4 col-sm-6 col-md-4 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="dropdown profile-action">
-                                        <a aria-expanded="false" data-toggle="dropdown" class="action-icon dropdown-toggle" href="#"><i class="material-icons">more_vert</i></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a data-target="#edit_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                            <a data-target="#delete_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                        </div>
-                                    </div>
-                                    <h4 class="project-title"><a href="project-view.html">Office Management</a></h4>
-                                    <small class="block text-ellipsis m-b-15">
-                                        <span class="text-xs">1</span> <span class="text-muted">open tasks, </span>
-                                        <span class="text-xs">9</span> <span class="text-muted">tasks completed</span>
-                                    </small>
-                                    <p class="text-muted">Lorem Ipsum is simply dummy text of the printing and
-                                        typesetting industry. When an unknown printer took a galley of type and
-                                        scrambled it...
-                                    </p>
-                                    <div class="pro-deadline m-b-15">
-                                        <div class="sub-title">
-                                            Deadline:
-                                        </div>
-                                        <div class="text-muted">
-                                            17 Apr 2019
-                                        </div>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Project Leader :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Jeffery Lalor"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Team :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Doe"><img alt="" src="assets/img/profiles/avatar-02.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Richard Miles"><img alt="" src="assets/img/profiles/avatar-09.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Smith"><img alt="" src="assets/img/profiles/avatar-10.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Mike Litorus"><img alt="" src="assets/img/profiles/avatar-05.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="all-users">+15</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <p class="m-b-5">Progress <span class="text-success float-right">40%</span></p>
-                                    <div class="progress progress-xs mb-0">
-                                        <div style="width: 40%" title="" data-toggle="tooltip" role="progressbar" class="progress-bar bg-success" data-original-title="40%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-4 col-sm-6 col-md-4 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="dropdown profile-action">
-                                        <a aria-expanded="false" data-toggle="dropdown" class="action-icon dropdown-toggle" href="#"><i class="material-icons">more_vert</i></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a data-target="#edit_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                            <a data-target="#delete_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                        </div>
-                                    </div>
-                                    <h4 class="project-title"><a href="project-view.html">Project Management</a></h4>
-                                    <small class="block text-ellipsis m-b-15">
-                                        <span class="text-xs">2</span> <span class="text-muted">open tasks, </span>
-                                        <span class="text-xs">5</span> <span class="text-muted">tasks completed</span>
-                                    </small>
-                                    <p class="text-muted">Lorem Ipsum is simply dummy text of the printing and
-                                        typesetting industry. When an unknown printer took a galley of type and
-                                        scrambled it...
-                                    </p>
-                                    <div class="pro-deadline m-b-15">
-                                        <div class="sub-title">
-                                            Deadline:
-                                        </div>
-                                        <div class="text-muted">
-                                            17 Apr 2019
-                                        </div>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Project Leader :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Jeffery Lalor"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Team :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Doe"><img alt="" src="assets/img/profiles/avatar-02.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Richard Miles"><img alt="" src="assets/img/profiles/avatar-09.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Smith"><img alt="" src="assets/img/profiles/avatar-10.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Mike Litorus"><img alt="" src="assets/img/profiles/avatar-05.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="all-users">+15</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <p class="m-b-5">Progress <span class="text-success float-right">40%</span></p>
-                                    <div class="progress progress-xs mb-0">
-                                        <div style="width: 40%" title="" data-toggle="tooltip" role="progressbar" class="progress-bar bg-success" data-original-title="40%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-4 col-sm-6 col-md-4 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="dropdown profile-action">
-                                        <a aria-expanded="false" data-toggle="dropdown" class="action-icon dropdown-toggle" href="#"><i class="material-icons">more_vert</i></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a data-target="#edit_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                            <a data-target="#delete_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                        </div>
-                                    </div>
-                                    <h4 class="project-title"><a href="project-view.html">Video Calling App</a></h4>
-                                    <small class="block text-ellipsis m-b-15">
-                                        <span class="text-xs">3</span> <span class="text-muted">open tasks, </span>
-                                        <span class="text-xs">3</span> <span class="text-muted">tasks completed</span>
-                                    </small>
-                                    <p class="text-muted">Lorem Ipsum is simply dummy text of the printing and
-                                        typesetting industry. When an unknown printer took a galley of type and
-                                        scrambled it...
-                                    </p>
-                                    <div class="pro-deadline m-b-15">
-                                        <div class="sub-title">
-                                            Deadline:
-                                        </div>
-                                        <div class="text-muted">
-                                            17 Apr 2019
-                                        </div>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Project Leader :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Jeffery Lalor"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Team :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Doe"><img alt="" src="assets/img/profiles/avatar-02.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Richard Miles"><img alt="" src="assets/img/profiles/avatar-09.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Smith"><img alt="" src="assets/img/profiles/avatar-10.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Mike Litorus"><img alt="" src="assets/img/profiles/avatar-05.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="all-users">+15</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <p class="m-b-5">Progress <span class="text-success float-right">40%</span></p>
-                                    <div class="progress progress-xs mb-0">
-                                        <div style="width: 40%" title="" data-toggle="tooltip" role="progressbar" class="progress-bar bg-success" data-original-title="40%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-4 col-sm-6 col-md-4 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="dropdown profile-action">
-                                        <a aria-expanded="false" data-toggle="dropdown" class="action-icon dropdown-toggle" href="#"><i class="material-icons">more_vert</i></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a data-target="#edit_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                            <a data-target="#delete_project" data-toggle="modal" href="#" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                        </div>
-                                    </div>
-                                    <h4 class="project-title"><a href="project-view.html">Hospital Administration</a></h4>
-                                    <small class="block text-ellipsis m-b-15">
-                                        <span class="text-xs">12</span> <span class="text-muted">open tasks, </span>
-                                        <span class="text-xs">4</span> <span class="text-muted">tasks completed</span>
-                                    </small>
-                                    <p class="text-muted">Lorem Ipsum is simply dummy text of the printing and
-                                        typesetting industry. When an unknown printer took a galley of type and
-                                        scrambled it...
-                                    </p>
-                                    <div class="pro-deadline m-b-15">
-                                        <div class="sub-title">
-                                            Deadline:
-                                        </div>
-                                        <div class="text-muted">
-                                            17 Apr 2019
-                                        </div>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Project Leader :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Jeffery Lalor"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="project-members m-b-15">
-                                        <div>Team :</div>
-                                        <ul class="team-members">
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Doe"><img alt="" src="assets/img/profiles/avatar-02.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Richard Miles"><img alt="" src="assets/img/profiles/avatar-09.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="John Smith"><img alt="" src="assets/img/profiles/avatar-10.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" data-toggle="tooltip" title="Mike Litorus"><img alt="" src="assets/img/profiles/avatar-05.jpg"></a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="all-users">+15</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <p class="m-b-5">Progress <span class="text-success float-right">40%</span></p>
-                                    <div class="progress progress-xs mb-0">
-                                        <div style="width: 40%" title="" data-toggle="tooltip" role="progressbar" class="progress-bar bg-success" data-original-title="40%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Projects Tab -->
-                
-                <!-- Bank Statutory Tab -->
-                <div class="tab-pane fade" id="bank_statutory">
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="card-title"> Basic Salary Information</h3>
-                            <form>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Salary basis <span class="text-danger">*</span></label>
-                                            <select class="select">
-                                                <option>Select salary basis type</option>
-                                                <option>Hourly</option>
-                                                <option>Daily</option>
-                                                <option>Weekly</option>
-                                                <option>Monthly</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Salary amount <small class="text-muted">per month</small></label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">$</span>
-                                                </div>
-                                                <input type="text" class="form-control" placeholder="Type your salary amount" value="0.00">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Payment type</label>
-                                            <select class="select">
-                                                <option>Select payment type</option>
-                                                <option>Bank transfer</option>
-                                                <option>Check</option>
-                                                <option>Cash</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <h3 class="card-title"> PF Information</h3>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">PF contribution</label>
-                                            <select class="select">
-                                                <option>Select PF contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">PF No. <span class="text-danger">*</span></label>
-                                            <select class="select">
-                                                <option>Select PF contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Employee PF rate</label>
-                                            <select class="select">
-                                                <option>Select PF contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Additional rate <span class="text-danger">*</span></label>
-                                            <select class="select">
-                                                <option>Select additional rate</option>
-                                                <option>0%</option>
-                                                <option>1%</option>
-                                                <option>2%</option>
-                                                <option>3%</option>
-                                                <option>4%</option>
-                                                <option>5%</option>
-                                                <option>6%</option>
-                                                <option>7%</option>
-                                                <option>8%</option>
-                                                <option>9%</option>
-                                                <option>10%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Total rate</label>
-                                            <input type="text" class="form-control" placeholder="N/A" value="11%">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Employee PF rate</label>
-                                            <select class="select">
-                                                <option>Select PF contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Additional rate <span class="text-danger">*</span></label>
-                                            <select class="select">
-                                                <option>Select additional rate</option>
-                                                <option>0%</option>
-                                                <option>1%</option>
-                                                <option>2%</option>
-                                                <option>3%</option>
-                                                <option>4%</option>
-                                                <option>5%</option>
-                                                <option>6%</option>
-                                                <option>7%</option>
-                                                <option>8%</option>
-                                                <option>9%</option>
-                                                <option>10%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Total rate</label>
-                                            <input type="text" class="form-control" placeholder="N/A" value="11%">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <hr>
-                                <h3 class="card-title"> ESI Information</h3>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">ESI contribution</label>
-                                            <select class="select">
-                                                <option>Select ESI contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">ESI No. <span class="text-danger">*</span></label>
-                                            <select class="select">
-                                                <option>Select ESI contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Employee ESI rate</label>
-                                            <select class="select">
-                                                <option>Select ESI contribution</option>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Additional rate <span class="text-danger">*</span></label>
-                                            <select class="select">
-                                                <option>Select additional rate</option>
-                                                <option>0%</option>
-                                                <option>1%</option>
-                                                <option>2%</option>
-                                                <option>3%</option>
-                                                <option>4%</option>
-                                                <option>5%</option>
-                                                <option>6%</option>
-                                                <option>7%</option>
-                                                <option>8%</option>
-                                                <option>9%</option>
-                                                <option>10%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="col-form-label">Total rate</label>
-                                            <input type="text" class="form-control" placeholder="N/A" value="11%">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="submit-section">
-                                    <button class="btn btn-primary submit-btn" type="submit">Save</button>
-                                </div>
+
+                <div class="col-md-6 d-flex">
+    <div class="card profile-box flex-fill">
+        <div class="card-body">
+            <h3 class="card-title">Documents 
+                <a href="#" class="edit-icon" data-toggle="modal" data-target="#documents_modal">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </h3>
+            <div class="uploaded-files">
+                @if (!empty($documents))
+                    @foreach($documents as $document)
+                    <div class="file-item d-flex justify-content-between align-items-center mb-2">
+                        <span><i class="fa fa-file mr-2"></i>{{ $document->file_name }}</span>
+                        <div class="file-actions">
+                            <a href="{{ route('documents.download', $document->id) }}" class="btn btn-sm btn-primary mr-2">
+                                <i class="fa fa-download"></i>
+                            </a>
+                            <form action="{{ route('documents.destroy', $document->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                             </form>
                         </div>
                     </div>
-                </div>
-                <!-- /Bank Statutory Tab -->
+                    @endforeach
+                @else
+                    <p class="text-muted">No documents uploaded yet.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Documents Modal -->
+<div id="documents_modal" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Documents</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group">
+                        <label>Document Title</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Document Type</label>
+                        <select class="form-control" name="document_type" required>
+                            <option value="">Select Type</option>
+                            <option value="identification">Identification</option>
+                            <option value="qualification">Qualification</option>
+                            <option value="certificate">Certificate</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload File</label>
+                        <input type="file" class="form-control" name="document_file" required>
+                        <small class="text-muted">Allowed file types: PDF, DOC, DOCX, JPG, PNG (Max size: 5MB)</small>
+                    </div>
+                    <div class="submit-section">
+                        <button type="submit" class="btn btn-primary submit-btn">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
             </div>
         </div>
         <!-- /Page Content -->
@@ -1155,7 +685,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Bank Information</h5>
+                        <h5 class="modal-title">Add Bank Information</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -1179,14 +709,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>IFSC Code</label>
-                                        <input type="text" class="form-control @error('ifsc_code') is-invalid @enderror" name="ifsc_code" value="{{ old('ifsc_code') }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>PAN No</label>
-                                        <input type="text" class="form-control @error('pan_no') is-invalid @enderror" name="pan_no" value="{{ old('pan_no') }}">
+                                        <label>Account Type</label>
+                                        <input type="text" class="form-control @error(' account_type') is-invalid @enderror" name="account_type" value="{{ old('account_type') }}">
                                     </div>
                                 </div>
                             </div>
@@ -1199,96 +723,49 @@
             </div>
         </div>
         <!-- /Bank information Modal -->
-        
-        <!-- Family Info Modal -->
-        <div id="family_info_modal" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"> Family Informations</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+
+        <div class="modal fade" id="fnfp_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Modal Content (Your Form) -->
+            <form action="{{ route('fnfp.store') }}" method="POST">
+                @csrf
+                <!-- Your form content -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Staff Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your form fields -->
+                    <div class="form-group">
+                        <label>Name <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="name" required>
                     </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-scroll">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Family Member <a href="javascript:void(0);" class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Name <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Relationship <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Date of birth <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Phone <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Education Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Name <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Relationship <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Date of birth <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Phone <span class="text-danger">*</span></label>
-                                                    <input class="form-control" type="text">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="add-more">
-                                            <a href="javascript:void(0);"><i class="fa fa-plus-circle"></i> Add More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="submit-section">
-                                <button class="btn btn-primary submit-btn">Submit</button>
-                            </div>
-                        </form>
+                    <div class="form-group">
+                        <label>Account No. <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="account_no" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Employee Contribution <span class="text-danger">*</span></label>
+                        <input class="form-control" type="number" step="0.01" name="employee_contribution" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Employer Contribution <span class="text-danger">*</span></label>
+                        <input class="form-control" type="number" step="0.01" name="employer_contribution" required>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
-        <!-- /Family Info Modal -->
+    </div>
+</div>
+
+
         
         <!-- Emergency Contact Modal -->
         <div id="emergency_contact_modal" class="modal custom-modal fade" role="dialog">
@@ -1410,237 +887,7 @@
         </div>
         <!-- /Emergency Contact Modal -->
         
-        <!-- Education Modal -->
-        <div id="education_info" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"> Education Informations</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-scroll">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Education Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="Oxford University" class="form-control floating">
-                                                    <label class="focus-label">Institution</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="Computer Science" class="form-control floating">
-                                                    <label class="focus-label">Subject</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <div class="cal-icon">
-                                                        <input type="text" value="01/06/2002" class="form-control floating datetimepicker">
-                                                    </div>
-                                                    <label class="focus-label">Starting Date</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <div class="cal-icon">
-                                                        <input type="text" value="31/05/2006" class="form-control floating datetimepicker">
-                                                    </div>
-                                                    <label class="focus-label">Complete Date</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="BE Computer Science" class="form-control floating">
-                                                    <label class="focus-label">Degree</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="Grade A" class="form-control floating">
-                                                    <label class="focus-label">Grade</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Education Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="Oxford University" class="form-control floating">
-                                                    <label class="focus-label">Institution</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="Computer Science" class="form-control floating">
-                                                    <label class="focus-label">Subject</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <div class="cal-icon">
-                                                        <input type="text" value="01/06/2002" class="form-control floating datetimepicker">
-                                                    </div>
-                                                    <label class="focus-label">Starting Date</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <div class="cal-icon">
-                                                        <input type="text" value="31/05/2006" class="form-control floating datetimepicker">
-                                                    </div>
-                                                    <label class="focus-label">Complete Date</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="BE Computer Science" class="form-control floating">
-                                                    <label class="focus-label">Degree</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus focused">
-                                                    <input type="text" value="Grade A" class="form-control floating">
-                                                    <label class="focus-label">Grade</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="add-more">
-                                            <a href="javascript:void(0);"><i class="fa fa-plus-circle"></i> Add More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="submit-section">
-                                <button class="btn btn-primary submit-btn">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Education Modal -->
-        
-        <!-- Experience Modal -->
-        <div id="experience_info" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Experience Informations</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-scroll">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Experience Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <input type="text" class="form-control floating" value="Digital Devlopment Inc">
-                                                    <label class="focus-label">Company Name</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <input type="text" class="form-control floating" value="United States">
-                                                    <label class="focus-label">Location</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <input type="text" class="form-control floating" value="Web Developer">
-                                                    <label class="focus-label">Job Position</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <div class="cal-icon">
-                                                        <input type="text" class="form-control floating datetimepicker" value="01/07/2007">
-                                                    </div>
-                                                    <label class="focus-label">Period From</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <div class="cal-icon">
-                                                        <input type="text" class="form-control floating datetimepicker" value="08/06/2018">
-                                                    </div>
-                                                    <label class="focus-label">Period To</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Experience Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa fa-trash-o"></i></a></h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <input type="text" class="form-control floating" value="Digital Devlopment Inc">
-                                                    <label class="focus-label">Company Name</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <input type="text" class="form-control floating" value="United States">
-                                                    <label class="focus-label">Location</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <input type="text" class="form-control floating" value="Web Developer">
-                                                    <label class="focus-label">Job Position</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <div class="cal-icon">
-                                                        <input type="text" class="form-control floating datetimepicker" value="01/07/2007">
-                                                    </div>
-                                                    <label class="focus-label">Period From</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group form-focus">
-                                                    <div class="cal-icon">
-                                                        <input type="text" class="form-control floating datetimepicker" value="08/06/2018">
-                                                    </div>
-                                                    <label class="focus-label">Period To</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="add-more">
-                                            <a href="javascript:void(0);"><i class="fa fa-plus-circle"></i> Add More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="submit-section">
-                                <button class="btn btn-primary submit-btn">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Experience Modal -->
+       
     <!-- /Page Content -->
     </div>
     @section('script')

@@ -614,6 +614,12 @@ final readonly class Merger
             $testsUsing = $cliConfiguration->testsUsing();
         }
 
+        $testsRequiringPhpExtension = null;
+
+        if ($cliConfiguration->hasTestsRequiringPhpExtension()) {
+            $testsRequiringPhpExtension = $cliConfiguration->testsRequiringPhpExtension();
+        }
+
         $filter = null;
 
         if ($cliConfiguration->hasFilter()) {
@@ -873,6 +879,7 @@ final readonly class Merger
             $testDoxOutputSummary,
             $testsCovering,
             $testsUsing,
+            $testsRequiringPhpExtension,
             $filter,
             $excludeFilter,
             $groups,

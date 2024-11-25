@@ -75,37 +75,38 @@
                                     <th class="text-right no-sort">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($users as $items )
-                                <tr>
-                                    <td>
-                                        <h2 class="table-avatar">
-                                            <a href="{{ url('employee/profile/'.$items->user_id) }}" class="avatar"><img alt="" src="{{ URL::to('/assets/images/'. $items->avatar) }}"></a>
-                                            <a href="{{ url('employee/profile/'.$items->user_id) }}">{{ $items->name }}<span>{{ $items->position }}</span></a>
-                                        </h2>
-                                    </td>
-                                    <td>{{ $items->user_id }}</td>
-                                    <td>{{ $items->email }}</td>
-                                    <td>{{ $items->phone_number }}</td>
-                                    <td>{{ $items->join_date }}</td>
-                                    <td>{{ $items->role_name }}</td>
-                                    <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="{{ url('all/employee/view/edit/'.$items->user_id) }}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                <a class="dropdown-item" href="{{url('all/employee/delete/'.$items->user_id)}}"onclick="return confirm('Are you sure to want to delete it?')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                            </div>
+                  <tbody>
+                        @foreach ($users as $items )
+                        <tr>
+                            <td>
+                                <h2 class="table-avatar">
+                                    <a href="{{ url('employee/profile/'.$items->user_id) }}" class="avatar"><img alt="" src="{{ URL::to('/assets/images/'. $items->avatar) }}"></a>
+                                    <a href="{{ url('employee/profile/'.$items->user_id) }}">{{ $items->name }}<span>{{ $items->position }}</span></a>
+                                </h2>
+                            </td>
+                            <td>{{ $items->user_id }}</td>
+                            <td>{{ $items->email }}</td>
+                            <td>{{ $items->phone_number }}</td>
+                            <td>{{ $items->join_date }}</td>
+                            <td>{{ $items->role_name }}</td>
+                            <td class="text-right">
+                                <div class="dropdown dropdown-action">
+                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item" href="{{ url('all/employee/view/edit/'.$items->user_id) }}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                        <a class="dropdown-item" href="{{url('all/employee/delete/'.$items->user_id)}}" onclick="return confirm('Are you sure to want to delete it?')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+
+                                            </table>
                                         </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                    </div>
+                                </div>
+                            </div>
         <!-- /Page Content -->
       
         <!-- Add Employee Modal -->
@@ -259,7 +260,7 @@
         // select auto id and email
         $('#name').on('change',function()
         {
-            $('#employee_id').val($(this).find(':selected').data('employee_id'));
+            $('#user_id').val($(this).find(':selected').data('user_id'));
             $('#email').val($(this).find(':selected').data('email'));
         });
     </script>

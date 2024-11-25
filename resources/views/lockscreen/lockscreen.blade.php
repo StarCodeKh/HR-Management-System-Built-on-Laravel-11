@@ -5,7 +5,7 @@
             <div class="col-lg-5 col-12">
                 <div id="auth-left">
                     <div class="auth-logo">
-                        <a href="{{ route('home') }}"><img src="assets/images/logo/logo.png" alt="Logo"></a>
+                        <a href="{{ route('home') }}"><img src="assets/images/logo/company_logo.png" alt="Company logo"></a>
                     </div>
                               
                     <h1 class="auth-title">Lock Screen.</h1>

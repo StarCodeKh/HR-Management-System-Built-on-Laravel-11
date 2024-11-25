@@ -83,6 +83,7 @@ function display_help {
     echo "  ${GREEN}sail mysql${NC}     Start a MySQL CLI session within the 'mysql' container"
     echo "  ${GREEN}sail mariadb${NC}   Start a MySQL CLI session within the 'mariadb' container"
     echo "  ${GREEN}sail psql${NC}      Start a PostgreSQL CLI session within the 'pgsql' container"
+    echo "  ${GREEN}sail mongodb${NC}   Start a Mongo Shell session within the 'mongodb' container"
     echo "  ${GREEN}sail redis${NC}     Start a Redis CLI session within the 'redis' container"
     echo
     echo "${YELLOW}Debugging:${NC}"
@@ -212,7 +213,7 @@ if [ "$1" == "php" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" "php" "$@")
+        ARGS+=("$APP_SERVICE" "php")
     else
         sail_is_not_running
     fi
@@ -222,9 +223,11 @@ elif [ "$1" == "bin" ]; then
     shift 1
 
     if [ "$EXEC" == "yes" ]; then
+        CMD=$1
+        shift 1
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" ./vendor/bin/"$@")
+        ARGS+=("$APP_SERVICE" ./vendor/bin/"$CMD")
     else
         sail_is_not_running
     fi
@@ -248,7 +251,7 @@ elif [ "$1" == "composer" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" "composer" "$@")
+        ARGS+=("$APP_SERVICE" "composer")
     else
         sail_is_not_running
     fi
@@ -260,7 +263,7 @@ elif [ "$1" == "artisan" ] || [ "$1" == "art" ] || [ "$1" == "a" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" php artisan "$@")
+        ARGS+=("$APP_SERVICE" php artisan)
     else
         sail_is_not_running
     fi
@@ -272,7 +275,7 @@ elif [ "$1" == "debug" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail -e XDEBUG_TRIGGER=1)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" php artisan "$@")
+        ARGS+=("$APP_SERVICE" php artisan)
     else
         sail_is_not_running
     fi
@@ -284,7 +287,7 @@ elif [ "$1" == "test" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" php artisan test "$@")
+        ARGS+=("$APP_SERVICE" php artisan test)
     else
         sail_is_not_running
     fi
@@ -296,7 +299,7 @@ elif [ "$1" == "phpunit" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" php vendor/bin/phpunit "$@")
+        ARGS+=("$APP_SERVICE" php vendor/bin/phpunit)
     else
         sail_is_not_running
     fi
@@ -308,7 +311,7 @@ elif [ "$1" == "pest" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" php vendor/bin/pest "$@")
+        ARGS+=("$APP_SERVICE" php vendor/bin/pest)
     else
         sail_is_not_running
     fi
@@ -320,7 +323,7 @@ elif [ "$1" == "pint" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" php vendor/bin/pint "$@")
+        ARGS+=("$APP_SERVICE" php vendor/bin/pint)
     else
         sail_is_not_running
     fi
@@ -334,7 +337,7 @@ elif [ "$1" == "dusk" ]; then
         [ ! -t 0 ] && ARGS+=(-T)
         ARGS+=(-e "APP_URL=http://${APP_SERVICE}")
         ARGS+=(-e "DUSK_DRIVER_URL=http://selenium:4444/wd/hub")
-        ARGS+=("$APP_SERVICE" php artisan dusk "$@")
+        ARGS+=("$APP_SERVICE" php artisan dusk)
     else
         sail_is_not_running
     fi
@@ -348,13 +351,13 @@ elif [ "$1" == "dusk:fails" ]; then
         [ ! -t 0 ] && ARGS+=(-T)
         ARGS+=(-e "APP_URL=http://${APP_SERVICE}")
         ARGS+=(-e "DUSK_DRIVER_URL=http://selenium:4444/wd/hub")
-        ARGS+=("$APP_SERVICE" php artisan dusk:fails "$@")
+        ARGS+=("$APP_SERVICE" php artisan dusk:fails)
     else
         sail_is_not_running
     fi
 
 # Initiate a Laravel Tinker session within the application container...
-elif [ "$1" == "tinker" ] ; then
+elif [ "$1" == "tinker" ]; then
     shift 1
 
     if [ "$EXEC" == "yes" ]; then
@@ -372,7 +375,7 @@ elif [ "$1" == "node" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" node "$@")
+        ARGS+=("$APP_SERVICE" node)
     else
         sail_is_not_running
     fi
@@ -384,7 +387,7 @@ elif [ "$1" == "npm" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" npm "$@")
+        ARGS+=("$APP_SERVICE" npm)
     else
         sail_is_not_running
     fi
@@ -396,7 +399,7 @@ elif [ "$1" == "npx" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" npx "$@")
+        ARGS+=("$APP_SERVICE" npx)
     else
         sail_is_not_running
     fi
@@ -408,7 +411,7 @@ elif [ "$1" == "pnpm" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" pnpm "$@")
+        ARGS+=("$APP_SERVICE" pnpm)
     else
         sail_is_not_running
     fi
@@ -420,7 +423,7 @@ elif [ "$1" == "pnpx" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" pnpx "$@")
+        ARGS+=("$APP_SERVICE" pnpx)
     else
         sail_is_not_running
     fi
@@ -432,7 +435,7 @@ elif [ "$1" == "yarn" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" yarn "$@")
+        ARGS+=("$APP_SERVICE" yarn)
     else
         sail_is_not_running
     fi
@@ -444,7 +447,7 @@ elif [ "$1" == "bun" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" bun "$@")
+        ARGS+=("$APP_SERVICE" bun)
     else
         sail_is_not_running
     fi
@@ -456,7 +459,7 @@ elif [ "$1" == "bunx" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" bunx "$@")
+        ARGS+=("$APP_SERVICE" bunx)
     else
         sail_is_not_running
     fi
@@ -507,7 +510,7 @@ elif [ "$1" == "shell" ] || [ "$1" == "bash" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u sail)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" bash "$@")
+        ARGS+=("$APP_SERVICE" bash)
     else
         sail_is_not_running
     fi
@@ -519,13 +522,25 @@ elif [ "$1" == "root-shell" ] || [ "$1" == "root-bash" ]; then
     if [ "$EXEC" == "yes" ]; then
         ARGS+=(exec -u root)
         [ ! -t 0 ] && ARGS+=(-T)
-        ARGS+=("$APP_SERVICE" bash "$@")
+        ARGS+=("$APP_SERVICE" bash)
+    else
+        sail_is_not_running
+    fi
+
+# Initiate a MongoDB Shell within the "mongodb" container...
+elif [ "$1" == "mongodb" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=(mongodb mongosh --port "${FORWARD_MONGODB_PORT:-27017}" --username "$MONGODB_USERNAME" --password "$MONGODB_PASSWORD" --authenticationDatabase admin)
     else
         sail_is_not_running
     fi
 
 # Initiate a Redis CLI terminal session within the "redis" container...
-elif [ "$1" == "redis" ] ; then
+elif [ "$1" == "redis" ]; then
     shift 1
 
     if [ "$EXEC" == "yes" ]; then
@@ -541,7 +556,7 @@ elif [ "$1" == "share" ]; then
     shift 1
 
     if [ "$EXEC" == "yes" ]; then
-        docker run --init --rm -p "$SAIL_SHARE_DASHBOARD":4040 -t beyondcodegmbh/expose-server:latest share http://host.docker.internal:"$APP_PORT" \
+        docker run --init --rm --add-host=host.docker.internal:host-gateway -p "$SAIL_SHARE_DASHBOARD":4040 -t beyondcodegmbh/expose-server:latest share http://host.docker.internal:"$APP_PORT" \
             --server-host="$SAIL_SHARE_SERVER_HOST" \
             --server-port="$SAIL_SHARE_SERVER_PORT" \
             --auth="$SAIL_SHARE_TOKEN" \
@@ -559,6 +574,15 @@ elif [ "$1" == "share" ]; then
 elif [ "$1" == "open" ]; then
     shift 1
 
+    if command -v open &>/dev/null; then
+        OPEN="open"
+    elif command -v xdg-open &>/dev/null; then
+        OPEN="xdg-open"
+    else
+        echo "Neither open nor xdg-open is available. Exiting."
+        exit 1
+    fi
+
     if [ "$EXEC" == "yes" ]; then
 
         if [[ -n "$APP_PORT" && "$APP_PORT" != "80" ]]; then
@@ -567,17 +591,13 @@ elif [ "$1" == "open" ]; then
             FULL_URL="$APP_URL"
         fi
 
-        open "$FULL_URL"
+        $OPEN "$FULL_URL"
 
         exit
     else
         sail_is_not_running
     fi
-
-# Pass unknown commands to the "docker-compose" binary...
-else
-    ARGS+=("$@")
 fi
 
 # Run Docker Compose with the defined arguments...
-"${DOCKER_COMPOSE[@]}" "${ARGS[@]}"
+"${DOCKER_COMPOSE[@]}" "${ARGS[@]}" "$@"

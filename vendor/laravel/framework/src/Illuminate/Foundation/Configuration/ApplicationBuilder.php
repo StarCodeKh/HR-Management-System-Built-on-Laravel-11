@@ -269,6 +269,18 @@ class ApplicationBuilder
             if ($priorities = $middleware->getMiddlewarePriority()) {
                 $kernel->setMiddlewarePriority($priorities);
             }
+
+            if ($priorityAppends = $middleware->getMiddlewarePriorityAppends()) {
+                foreach ($priorityAppends as $newMiddleware => $after) {
+                    $kernel->addToMiddlewarePriorityAfter($after, $newMiddleware);
+                }
+            }
+
+            if ($priorityPrepends = $middleware->getMiddlewarePriorityPrepends()) {
+                foreach ($priorityPrepends as $newMiddleware => $before) {
+                    $kernel->addToMiddlewarePriorityBefore($before, $newMiddleware);
+                }
+            }
         });
 
         return $this;

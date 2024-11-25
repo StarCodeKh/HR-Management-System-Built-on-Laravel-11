@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('user_id')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('bank_account_no')->nullable();
-            $table->string('ifsc_code')->nullable();
-            $table->string('pan_no')->nullable();
+            $table->string('account_type')->nullable();
             $table->timestamps();
         });
     }

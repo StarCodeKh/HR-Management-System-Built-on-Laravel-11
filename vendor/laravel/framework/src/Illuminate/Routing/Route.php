@@ -23,6 +23,8 @@ use Laravel\SerializableClosure\SerializableClosure;
 use LogicException;
 use Symfony\Component\Routing\Route as SymfonyRoute;
 
+use function Illuminate\Support\enum_value;
+
 class Route
 {
     use CreatesRegularExpressionRouteConstraints, FiltersControllerMiddleware, Macroable, ResolvesRouteDependencies;
@@ -1081,12 +1083,14 @@ class Route
     /**
      * Specify that the "Authorize" / "can" middleware should be applied to the route with the given options.
      *
-     * @param  string  $ability
+     * @param  \BackedEnum|string  $ability
      * @param  array|string  $models
      * @return $this
      */
     public function can($ability, $models = [])
     {
+        $ability = enum_value($ability);
+
         return empty($models)
                     ? $this->middleware(['can:'.$ability])
                     : $this->middleware(['can:'.$ability.','.implode(',', Arr::wrap($models))]);

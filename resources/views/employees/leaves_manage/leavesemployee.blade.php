@@ -60,6 +60,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th hidden>ID</th>
+                                    <th>Employee</th>
                                     <th>Leave Type</th>
                                     <th hidden>Remaining Leaves</th>
                                     <th>From</th>
@@ -82,6 +83,7 @@
                                     <tr>
                                         <td>{{ ++$key}}</td>
                                         <td hidden class="id_record">{{ $leave->id }}</td>
+                                        <td class="Employee">{{$leave->employee_name}}</td>
                                         <td class="leave_type">{{ $leave->leave_type }}</td>
                                         <td hidden class="remaining_leave">{{ $leave->remaining_leave }}</td>
                                         <td class="date_from">{{ $leave->date_from }}</td>

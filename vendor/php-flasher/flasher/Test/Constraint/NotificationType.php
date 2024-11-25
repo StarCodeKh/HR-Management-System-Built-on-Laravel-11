@@ -23,7 +23,7 @@ final class NotificationType extends Constraint
 
     public function toString(): string
     {
-        return sprintf('contains a notification of type "%s".', $this->expectedType);
+        return \sprintf('contains a notification of type "%s".', $this->expectedType);
     }
 
     /**
@@ -40,7 +40,7 @@ final class NotificationType extends Constraint
             return false;
         }
 
-        foreach ($other->getNotifications() as $notification) {
+        foreach ($other->getEnvelopes() as $notification) {
             if ($notification->getType() === $this->expectedType) {
                 return true;
             }
@@ -60,12 +60,12 @@ final class NotificationType extends Constraint
     {
         $actualTypes = array_map(function (NotificationInterface $notification) {
             return $notification->getType();
-        }, $other->getNotifications());
+        }, $other->getEnvelopes());
 
         $uniqueTypes = array_unique($actualTypes);
         $typesList = implode(', ', $uniqueTypes);
 
-        return sprintf(
+        return \sprintf(
             'Expected the NotificationEvents to contain a notification of type "%s", but found types: %s.',
             $this->expectedType,
             $typesList ?: 'none'

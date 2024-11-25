@@ -22,7 +22,7 @@ final class NotificationTitle extends Constraint
 
     public function toString(): string
     {
-        return sprintf('contains a notification with a title containing "%s"', $this->expectedTitle);
+        return \sprintf('contains a notification with a title containing "%s"', $this->expectedTitle);
     }
 
     protected function matches(mixed $other): bool
@@ -31,7 +31,7 @@ final class NotificationTitle extends Constraint
             return false;
         }
 
-        foreach ($other->getNotifications() as $notification) {
+        foreach ($other->getEnvelopes() as $notification) {
             if (str_contains($notification->getTitle(), $this->expectedTitle)) {
                 return true;
             }
@@ -47,17 +47,17 @@ final class NotificationTitle extends Constraint
         }
 
         $foundTitles = array_map(function (NotificationInterface $notification) {
-            return sprintf('"%s"', $notification->getTitle());
-        }, $other->getNotifications());
+            return \sprintf('"%s"', $notification->getTitle());
+        }, $other->getEnvelopes());
 
         if (empty($foundTitles)) {
-            return sprintf(
+            return \sprintf(
                 'Expected to find a notification with a title containing "%s", but no notifications were found.',
                 $this->expectedTitle
             );
         }
 
-        return sprintf(
+        return \sprintf(
             'Expected to find a notification with a title containing "%s". Found titles: %s.',
             $this->expectedTitle,
             implode(', ', $foundTitles)
