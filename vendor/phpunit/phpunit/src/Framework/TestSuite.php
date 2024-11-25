@@ -10,7 +10,6 @@
 namespace PHPUnit\Framework;
 
 use const PHP_EOL;
-use function array_keys;
 use function array_merge;
 use function array_pop;
 use function array_reverse;
@@ -57,7 +56,7 @@ use Throwable;
  *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-class TestSuite implements IteratorAggregate, Reorderable, SelfDescribing, Test
+class TestSuite implements IteratorAggregate, Reorderable, Test
 {
     /**
      * @var non-empty-string
@@ -131,14 +130,6 @@ class TestSuite implements IteratorAggregate, Reorderable, SelfDescribing, Test
     }
 
     /**
-     * Returns a string representation of the test suite.
-     */
-    public function toString(): string
-    {
-        return $this->name();
-    }
-
-    /**
      * Adds a test to the suite.
      *
      * @param list<non-empty-string> $groups
@@ -157,29 +148,31 @@ class TestSuite implements IteratorAggregate, Reorderable, SelfDescribing, Test
 
         $class = new ReflectionClass($test);
 
-        if (!$class->isAbstract()) {
-            $this->tests[] = $test;
+        if ($class->isAbstract()) {
+            return;
+        }
 
-            $this->clearCaches();
+        $this->tests[] = $test;
 
-            if ($this->containsOnlyVirtualGroups($groups)) {
-                $groups[] = 'default';
-            }
+        $this->clearCaches();
 
-            if ($test instanceof TestCase) {
-                $id = $test->valueObjectForEvents()->id();
+        if ($this->containsOnlyVirtualGroups($groups)) {
+            $groups[] = 'default';
+        }
 
-                $test->setGroups($groups);
+        if ($test instanceof TestCase) {
+            $id = $test->valueObjectForEvents()->id();
+
+            $test->setGroups($groups);
+        } else {
+            $id = $test->valueObjectForEvents()->id();
+        }
+
+        foreach ($groups as $group) {
+            if (!isset($this->groups[$group])) {
+                $this->groups[$group] = [$id];
             } else {
-                $id = $test->valueObjectForEvents()->id();
-            }
-
-            foreach ($groups as $group) {
-                if (!isset($this->groups[$group])) {
-                    $this->groups[$group] = [$id];
-                } else {
-                    $this->groups[$group][] = $id;
-                }
+                $this->groups[$group][] = $id;
             }
         }
     }
@@ -230,23 +223,15 @@ class TestSuite implements IteratorAggregate, Reorderable, SelfDescribing, Test
      */
     public function addTestFile(string $filename, array $groups = []): void
     {
-        if (str_ends_with($filename, '.phpt') && is_file($filename)) {
-            try {
+        try {
+            if (str_ends_with($filename, '.phpt') && is_file($filename)) {
                 $this->addTest(new PhptTestCase($filename));
-            } catch (RunnerException $e) {
-                Event\Facade::emitter()->testRunnerTriggeredWarning(
-                    $e->getMessage(),
+            } else {
+                $this->addTestSuite(
+                    (new TestSuiteLoader)->load($filename),
+                    $groups,
                 );
             }
-
-            return;
-        }
-
-        try {
-            $this->addTestSuite(
-                (new TestSuiteLoader)->load($filename),
-                $groups,
-            );
         } catch (RunnerException $e) {
             Event\Facade::emitter()->testRunnerTriggeredWarning(
                 $e->getMessage(),
@@ -302,19 +287,9 @@ class TestSuite implements IteratorAggregate, Reorderable, SelfDescribing, Test
     }
 
     /**
-     * Returns the test groups of the suite.
-     *
-     * @return list<non-empty-string>
-     */
-    public function groups(): array
-    {
-        return array_keys($this->groups);
-    }
-
-    /**
      * @return array<non-empty-string, list<non-empty-string>>
      */
-    public function groupDetails(): array
+    public function groups(): array
     {
         return $this->groups;
     }
@@ -646,7 +621,9 @@ class TestSuite implements IteratorAggregate, Reorderable, SelfDescribing, Test
                     continue;
                 }
 
-                if ($missingRequirements = (new Requirements)->requirementsNotSatisfiedFor($this->name, $beforeClassMethod)) {
+                $missingRequirements = (new Requirements)->requirementsNotSatisfiedFor($this->name, $beforeClassMethod);
+
+                if ($missingRequirements !== []) {
                     $this->markTestSuiteSkipped(implode(PHP_EOL, $missingRequirements));
                 }
 

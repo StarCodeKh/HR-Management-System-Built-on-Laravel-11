@@ -358,7 +358,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
             return;
         }
 
-        if (!$this->shouldRunInSeparateProcess()) {
+        if (!$this->shouldRunInSeparateProcess() || $this->requirementsNotSatisfied()) {
             (new TestRunner)->run($this);
 
             return;
@@ -1974,25 +1974,48 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
      */
     private function getActiveErrorHandlers(): array
     {
-        $res = [];
+        $activeErrorHandlers = [];
 
         while (true) {
             $previousHandler = set_error_handler(static fn () => false);
+
             restore_error_handler();
 
             if ($previousHandler === null) {
                 break;
             }
-            $res[] = $previousHandler;
+
+            $activeErrorHandlers[] = $previousHandler;
+
             restore_error_handler();
         }
-        $res = array_reverse($res);
 
-        foreach ($res as $handler) {
+        $activeErrorHandlers      = array_reverse($activeErrorHandlers);
+        $invalidErrorHandlerStack = false;
+
+        foreach ($activeErrorHandlers as $handler) {
+            if (!is_callable($handler)) {
+                $invalidErrorHandlerStack = true;
+
+                continue;
+            }
+
             set_error_handler($handler);
         }
 
-        return $res;
+        /** @phpstan-ignore if.alwaysFalse */
+        if ($invalidErrorHandlerStack) {
+            $message = 'At least one error handler is not callable outside the scope it was registered in';
+
+            Event\Facade::emitter()->testConsideredRisky(
+                $this->valueObjectForEvents(),
+                $message,
+            );
+
+            $this->status = TestStatus::risky($message);
+        }
+
+        return $activeErrorHandlers;
     }
 
     /**
@@ -2547,6 +2570,11 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
     private function hasExpectationOnOutput(): bool
     {
         return is_string($this->outputExpectedString) || is_string($this->outputExpectedRegex);
+    }
+
+    private function requirementsNotSatisfied(): bool
+    {
+        return (new Requirements)->requirementsNotSatisfiedFor(static::class, $this->methodName) !== [];
     }
 
     /**

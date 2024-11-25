@@ -20,6 +20,7 @@ use function is_file;
 use function is_numeric;
 use function sprintf;
 use function str_contains;
+use function strtolower;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Runner\TestSuiteSorter;
 use PHPUnit\Util\Filesystem;
@@ -76,6 +77,7 @@ final class Builder
         'group=',
         'covers=',
         'uses=',
+        'requires-php-extension=',
         'help',
         'resolve-dependencies',
         'ignore-dependencies',
@@ -230,6 +232,7 @@ final class Builder
         $groups                            = null;
         $testsCovering                     = null;
         $testsUsing                        = null;
+        $testsRequiringPhpExtension        = null;
         $help                              = false;
         $includePath                       = null;
         $iniSettings                       = [];
@@ -512,6 +515,17 @@ final class Builder
                     }
 
                     $testsUsing = array_merge($testsUsing, array_map('strtolower', explode(',', $option[1])));
+
+                    $optionAllowedMultipleTimes = true;
+
+                    break;
+
+                case '--requires-php-extension':
+                    if ($testsRequiringPhpExtension === null) {
+                        $testsRequiringPhpExtension = [];
+                    }
+
+                    $testsRequiringPhpExtension[] = strtolower($option[1]);
 
                     $optionAllowedMultipleTimes = true;
 
@@ -1038,6 +1052,7 @@ final class Builder
             $groups,
             $testsCovering,
             $testsUsing,
+            $testsRequiringPhpExtension,
             $help,
             $includePath,
             $iniSettings,

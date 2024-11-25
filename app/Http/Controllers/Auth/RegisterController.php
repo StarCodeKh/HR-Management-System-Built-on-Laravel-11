@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
 use Hash;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -22,16 +23,33 @@ class RegisterController extends Controller
     public function storeUser(Request $request)
     {
         try {
-           // Create an instance of the User model
-            $users = new User();
-            // Call the saveNewuser method
-            return $users->saveNewuser($request);
-            flash()->success('Account created successfully :)');
-            return redirect('login');
+            // Validate request
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+                'role_name' => 'required|string',
+            ]);
+    
+            // Create the user
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role_name' => $request->role_name,
+                'avatar' => $request->input('image', 'default_avatar.jpg'),
+                'join_date' => Carbon::now()->format('Y-m-d'),
+            ]);
+    
+            // Success message and redirect
+            session()->flash('success', 'Account created successfully :)');
+            return redirect()->route('login');
         } catch (\Exception $e) {
-            \Log::error($e);
-            flash()->error('Failed to Create Account. Please try again.');
-            return redirect()->back();
+            Log::error('Error in storeUser: ' . $e->getMessage());
+            session()->flash('error', 'Failed to Create Account. Please try again.');
+            return redirect()->back()->withInput();
         }
     }
+    
+    
 }

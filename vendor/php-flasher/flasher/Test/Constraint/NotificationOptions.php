@@ -30,7 +30,7 @@ final class NotificationOptions extends Constraint
             return false;
         }
 
-        foreach ($other->getNotifications() as $notification) {
+        foreach ($other->getEnvelopes() as $notification) {
             if (!array_diff_assoc($this->expectedOptions, $notification->getOptions())) {
                 return true;
             }
@@ -43,14 +43,14 @@ final class NotificationOptions extends Constraint
     {
         $actualOptions = [];
         if ($other instanceof NotificationEvents) {
-            foreach ($other->getNotifications() as $notification) {
+            foreach ($other->getEnvelopes() as $notification) {
                 $actualOptions[] = json_encode($notification->getOptions());
             }
         }
 
         $actualOptionsString = implode('; ', $actualOptions) ?: 'none found';
 
-        return sprintf(
+        return \sprintf(
             'Failed asserting that NotificationEvents %s. Actual options in notifications: [%s].',
             $this->toString(),
             $actualOptionsString

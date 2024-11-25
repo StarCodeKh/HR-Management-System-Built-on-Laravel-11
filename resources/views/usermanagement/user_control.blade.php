@@ -9,14 +9,14 @@
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col">
-                        <h3 class="page-title">User Management</h3>
+                        <h3 class="page-title">Employee Management</h3>
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">User</li>
+                            <li class="breadcrumb-item active">Employees</li>
                         </ul>
                     </div>
                     <div class="col-auto float-right ml-auto">
-                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_user"><i class="fa fa-plus"></i> Add User</a>
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_user"><i class="fa fa-plus"></i> Add Employee</a>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                 <div class="col-sm-6 col-md-3">  
                     <div class="form-group form-focus">
                         <input type="text" class="form-control floating" id="user_name" name="user_name">
-                        <label class="focus-label">User Name</label>
+                        <label class="focus-label">Employee Name</label>
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-3"> 
@@ -93,7 +93,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add New User</h5>
+                        <h5 class="modal-title">Add New Employee</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

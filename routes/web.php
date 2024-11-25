@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FnfpInfoController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\EmployeeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -202,6 +207,7 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
     // ---------------------------- Leaves ------------------------------//
     Route::controller(LeavesController::class)->group(function () {
         Route::middleware('auth')->group(function () {
+            Route::get('/leaves-admin', 'leavesAdmin')->middleware('role:admin');
             // ------------------- Employee Management Routes ---------------------
             Route::prefix('form/leaves')->group(function () {
                 Route::get('/new', 'leavesAdmin')->name('form/leaves/new');
@@ -320,4 +326,19 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
             Route::post('bank/information/save', 'saveRecord')->name('bank/information/save');
         });
     });
+
+    // ---------------------- Document  -----------------------//
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+        Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+        Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    });
+
+
+   // ---------------------- Fnfp Information  -----------------------//
+Route::get('/fnfp', [FnfpInfoController::class, 'index'])->name('fnfp.index');
+Route::post('/fnfp', [FnfpInfoController::class, 'store'])->name('fnfp.store');
+
+
+
 });

@@ -63,7 +63,11 @@ class Leave extends Model
             flash()->error('Failed Apply Leave :)');
             return redirect()->back();
         }
+
+        
     }
+
+    
 
     /** Delete Record */
     public function deleteRecord(Request $request) {

@@ -15,10 +15,38 @@ class LeavesController extends Controller
     /** Leaves Admin Page */
     public function leavesAdmin()
     {
-        $leaves = DB::table('leaves_admins')->join('users', 'users.user_id','leaves_admins.user_id')->select('leaves_admins.*', 'users.position','users.name','users.avatar')->get();
-        return view('employees.leaves_manage.leavesadmin',compact('leaves'));
+        // Get the currently authenticated user
+        $currentUser = auth()->user();
+    
+        // Check if the current user has the role 'admin'
+        if ($currentUser->role_name === 'admin') {
+            // Admin sees all leave requests
+            $getLeave = DB::table('leaves')
+                ->join('users', 'leaves.staff_id', '=', 'users.id')
+                ->select(
+                    'leaves.*',
+                    'users.name as employee_name',
+                    'users.avatar as employee_avatar'
+                )
+                ->get();
+        } else {
+            // Non-admins see only their own leave requests
+            $getLeave = DB::table('leaves')
+                ->join('users', 'leaves.staff_id', '=', 'users.id')
+                ->where('leaves.staff_id', $currentUser->id)
+                ->select(
+                    'leaves.*',
+                    'users.name as employee_name',
+                    'users.avatar as employee_avatar'
+                )
+                ->get();
+        }
+    
+        // Pass the data to the view
+        return view('employees.leaves_manage.leavesadmin', compact('getLeave'));
     }
-
+    
+    
     /** Get Information Leave */
     public function getInformationLeave(Request $request)
     {

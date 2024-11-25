@@ -2,11 +2,10 @@
 @section('content')
     <div class="main-wrapper">
         <div class="account-content">
-            <a href="{{ route('form/job/list') }}" class="btn btn-primary apply-btn">Apply Job</a>
             <div class="container">
                 <!-- Account Logo -->
                 <div class="account-logo">
-                    <a href="index.html"><img src="{{ URL::to('assets/img/logo2.png') }}" alt="Soeng Souy"></a>
+                    <a href="index.html"><img src="{{ URL::to('assets/img/company_logo.png') }}" alt="Company logo"></a>
                 </div>
                 <!-- /Account Logo -->
                 <div class="account-box">
@@ -53,9 +52,11 @@
                             <div class="form-group text-center">
                                 <button class="btn btn-primary account-btn" type="submit">Login</button>
                             </div>
+                            <!--
                             <div class="account-footer">
                                 <p>Don't have an account yet? <a href="{{ route('register') }}">Register</a></p>
                             </div>
+                            <-->
                         </form>
                         <!-- /Account Form -->
                     </div>
